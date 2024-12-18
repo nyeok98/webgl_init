@@ -14,6 +14,7 @@
   <br/>
 
 # Notes
-<img width="600" src="https://github.com/user-attachments/assets/7dcc7d29-b373-4f51-8c7d-2f259b16aaa6"/>
+<img width="600" src="https://github.com/user-attachments/assets/f2fda601-6a23-4ab1-8e7e-390a843f0036"/>
 
-*큐브 컨트롤 성공(24.12.08)*
+*공전하는 구 추가(24.12.19)* <br/>
+*큐브 컨트롤 성공(24.12.18)*
