@@ -4,9 +4,19 @@ import * as THREE from 'three';
 // 씬 생성
 const scene = new THREE.Scene();
 
-// 카메라 생성
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 10);
+// 정사영 카메라 설정
+const frustumSize = 20;
+const aspect = window.innerWidth / window.innerHeight;
+
+const camera = new THREE.OrthographicCamera(
+  (frustumSize * aspect) / -2,  // left
+  (frustumSize * aspect) / 2,   // right
+  frustumSize / 2,              // top
+  frustumSize / -2,             // bottom
+  0.1,                          // near
+  1000                          // far
+);
+camera.position.set(0, 20, 20);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 // 렌더러 생성
@@ -30,15 +40,23 @@ plane.visible = false; // 레이캐스팅을 위해 렌더링되지 않도록 �
 scene.add(plane);
 
 // ----- 큐브 오브젝트 생성 -----
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
 const cubeMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-cube.position.set(0, 0.5, 0);
+cube.position.set(0, 0, 0);
 scene.add(cube);
+
+// ----- 구 오브젝트 생성 -----
+const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
+const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xeeff00 });
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphere.position.set(5, 0.5, 0);
+scene.add(sphere);
+
 
 // ----- 빛 -----
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(10, 10, 10);
+light.position.set(0, 0.5, 0.5);
 scene.add(light);
 
 // ----- 레이캐스터 및 마우스 벡터 -----
@@ -62,12 +80,23 @@ window.addEventListener('click', (event) => {
   }
 });
 
+// ----- 애니메이션 관련 변수 -----
+let angle = 0;          // Sphere가 공전할 때 사용할 각도
+const orbitRadius = 10;  // 공전 반지름
+
 // 애니메이션 루프
-function animate() {
+(function animate() {
   requestAnimationFrame(animate);
   cube.position.lerp(targetPosition, 0.1);
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  cube.rotation.x += 0.02;
+  cube.rotation.y += 0.02;
+  cube.rotation.z += 0.02;
+  // Sphere를 중심(0, 0.5, 0) 주변으로 회전시키기
+  angle += 0.01; // 각도를 조금씩 증가
+  sphere.position.set(
+    Math.cos(angle) * orbitRadius,
+    0,
+    Math.sin(angle) * orbitRadius
+  );
   renderer.render(scene, camera);
-}
-animate();
+})();
